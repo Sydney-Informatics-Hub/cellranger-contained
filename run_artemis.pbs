@@ -17,4 +17,4 @@ singularity build cellranger.img docker://nbutter/cellranger:ubuntu1604
 
 ### 2 EXAMPLE WORKFLOW ###
 # Remove the build commands above and execute:
-singularity run --bind /project:/project cellranger.img /bin/bash -c "cd "$PBS_O_WORKDIR" && cellranger sitecheck > sitecheck.txt"
+singularity run --bind /project:/project cellranger.img /bin/bash -c "cd "$PBS_O_WORKDIR" && export TENX_IGNORE_DEPRECATED_OS=1; cellranger sitecheck > sitecheck.txt"
