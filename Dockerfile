@@ -1,23 +1,26 @@
 #To build this file:
-#sudo docker build . -t nbutter/pytorch:ubuntu1604
+#sudo docker build . -t nbutter/cellranger:ubuntu1604
 
 #To run this, mounting your current host directory in the container directory,
-# at /project, and excute the example script which is in your current
-# working direcotry run:
-#sudo docker run --gpus all -it -v `pwd`:/project nbutter/pytorch:ubuntu1604 /bin/bash -c "cd /project && python example_Unsupervised_surgery_pipeline_with_SCVI.py"
+# at /project, and excute an example run:
+#sudo docker run -it -v `pwd`:/project nbutter/cellranger:ubuntu1604 /bin/bash -c "cellranger sitecheck > /project/sitecheck.txt"
 
 #To push to docker hub:
-#sudo docker push nbutter/pytorch:ubuntu1604
+#sudo docker push nbutter/cellranger:ubuntu1604
 
 #To build a singularity container
-#singularity build pytorch.img docker://nbutter/pytorch:ubuntu1604
+#export SINGLUARITY_CACHEDIR=`pwd`
+#export SINGLUARITY_TMPDIR=`pwd`
+#singularity build cellranger.img docker://nbutter/cellranger:ubuntu1604
 
 #To run the singularity image (noting singularity mounts the current folder by default)
-#singularity run --nv --bind /project:/project pytorch.img /bin/bash -c "cd "$PBS_O_WORKDIR" && python example_Unsupervised_surgery_pipeline_with_SCVI.py"
+#singularity run --bind /project:/project cellranger.img /bin/bash -c "cd "$PBS_O_WORKDIR" && cellranger sitecheck > sitecheck.txt"
 
 # Pull base image.
-FROM nvidia/cuda:10.2-cudnn8-devel-ubuntu16.04
+FROM ubuntu:16.04
 MAINTAINER Nathaniel Butterworth USYD SIH
+
+RUN mkdir /project /scratch && touch /usr/bin/nvidia-smi
 
 # Set up ubuntu dependencies
 RUN apt-get update -y && \
@@ -27,23 +30,10 @@ RUN apt-get update -y && \
 # Make the dir everything will go in
 WORKDIR /build
 
-# Intall anaconda
-ENV PATH="/build/miniconda3/bin:${PATH}"
-ARG PATH="/build/miniconda3/bin:${PATH}"
-RUN curl -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.12.0-Linux-x86_64.sh &&\
-	mkdir /build/.conda && \
-	bash miniconda.sh -b -p /build/miniconda3 &&\
-	rm -rf miniconda.sh
-
-RUN conda --version
-
-RUN conda install pytorch==1.11 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=10.2 -c pytorch
-#conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=10.2 -c pytorch
-
-RUN conda clean -a -y
-#RUN pip cache purge
-
-RUN mkdir /project /scratch && touch /usr/bin/nvidia-smi
-
-CMD /bin/bash
+RUN curl -o cellranger-7.1.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.1.0.tar.gz?Expires=1675698474&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci03LjEuMC50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2NzU2OTg0NzR9fX1dfQ__&Signature=PLekkTNx7NbYv7ul1aMFjGt7NT1KXJHltEb95beWYhfZFVHOOE9ZKtWuSMZmruHDRVFO57bGDLn8z7d-lZ8~lGHs32uNokNHs2fpsqvpj2IZmzUb4-WXi5W75V3TiQY580cCVxC8bY9-S3JOJfs~7aLS2ZVhIlyMMM2yf1SaeCPxEnPKoOLDcgRC8D7gZUd3Os6n-n0YI1vnOFC4FvaEtSvf~6lmJIqhxonWiIn3Wg9GU-frlGn6aTFwfCPfceT2ukaAna1-S~K0mjBeiHbZ7Y7PvPkRYPNpJ81XTqAl8sz7F0N7zdrS9mDE~kCa3lfGVrCzfV30~K0dA98UgxXzTw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA"
 #
+RUN tar -xvf cellranger-7.1.0.tar.gz
+
+ENV PATH=""/build/cellranger-7.1.0:${PATH}""
+
+CMD cellranger
