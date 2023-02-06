@@ -1,6 +1,6 @@
-# pytorch Container
+# Cell Ranger Container
 
-Docker/Singularity image to run [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_in) on Centos 6.9 kernel (Ubuntu 16.04)
+Docker/Singularity image to run [Cell Ranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_in) on Centos 6.9 kernel (Ubuntu 16.04)
 
 
 If you have used this work for a publication, you must acknowledge SIH, e.g: "The authors acknowledge the technical assistance provided by the Sydney Informatics Hub, a Core Research Facility of the University of Sydney."
