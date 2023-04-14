@@ -43,8 +43,8 @@ See the repo at [https://hub.docker.com/r/nbutter/cellranger](https://hub.docker
 
 ## Build with singularity
 ```
-export SINGLUARITY_CACHEDIR=`pwd`
-export SINGLUARITY_TMPDIR=`pwd`
+export SINGULARITY_CACHEDIR=`pwd`
+export SINGULARITY_TMPDIR=`pwd`
 
 singularity build cellranger.img docker://nbutter/cellranger:ubuntu1604
 ```
